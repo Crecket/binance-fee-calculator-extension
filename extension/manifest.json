@@ -1,0 +1,40 @@
+{
+  "manifest_version": 2,
+  "name": "Unofficial Binance Fee Calculator - Unofficial",
+  "short_name": "Binance Fee Calculator",
+  "description": "Automatically calculate the USD transfer fee for withdrawals on Binance",
+  "version": "1.0.0",
+  "offline_enabled": false,
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.binance.com/fees.html"
+      ],
+      "css": [
+        "build/content.css"
+      ],
+      "js": [
+        "build/content.js"
+      ]
+    }
+  ],
+  "background" : {
+    "scripts" : ["build/background.js"]
+  },
+  "browser_action": {
+    "default_icon": "img/logo-16x16.png"
+  },
+  "icons": {
+    "16": "img/logo-16x16.png",
+    "48": "img/logo-48x48.png",
+    "128": "img/logo-128x128.png"
+  },
+  "permissions": [
+    "storage",
+    "https://api.binance.com/api/v3/*"
+  ],
+  "web_accessible_resources": [
+    "img/logo-16x16.png"
+  ],
+  "content_security_policy": "script-src 'self' https://code.jquery.com https://cdnjs.cloudflare.com 'unsafe-eval'; object-src 'self' https://fonts.googleapis.com"
+}
