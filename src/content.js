@@ -14,8 +14,12 @@ const Logger = require("./Helpers/Logger");
 
 // list of all binance symbols with current price
 let symbolList = {};
+// list of all currencies with their respective transfer rates
+let currencyList = {};
 // current btc/usdt price
 let btcUsdPrice = 10000;
+// selected currency
+let selectedCurrency = "USD";
 
 /**
  * Fetches torrent information for a given imdbID
@@ -60,14 +64,47 @@ const getBinanceSymbols = async () => {
 };
 
 /**
+ * Get the transfer rates for different currencies
+ * @returns {Promise<{}>}
+ */
+const getCurrencyRates = async () => {
+    // do lookup to fixer api to get USD values
+    const result = await axios.get("https://api.fixer.io/latest?base=USD");
+    Logger.debug("fixer currency api", result);
+
+    // get currency rates
+    const currencyRates = result.data.rates;
+
+    // loop through currencies and get rate value
+    Object.keys(currencyRates).map(currency => {
+        const currencyRate = currencyRates[currency];
+
+        currencyList[currency] = {
+            rate: currencyRate,
+            currency: currency
+        };
+    });
+
+    return currencyList;
+};
+
+/**
  * Only triggered on the https://www.binance.com/fees.html page
  * @param accountInfoListItems
+ * @param selectedCurrency
  * @param binancePromise
+ * @param currencyPromise
  * @returns {Promise<void>}
  */
-const renderFeeOutput = async (accountInfoListItems, binancePromise) => {
+const renderFeeOutput = async (
+    accountInfoListItems,
+    selectedCurrency,
+    binancePromise,
+    currencyPromise
+) => {
     // make sure it is finished
     await binancePromise;
+    await currencyPromise;
 
     let first = true;
     accountInfoListItems.each((key, accountInfoListItem) => {
@@ -104,11 +141,21 @@ const renderFeeOutput = async (accountInfoListItems, binancePromise) => {
             return;
         }
 
+        // check if the selected currency is usd and else calculate the correct price
+        const price =
+            selectedCurrency === "USD"
+                ? // normal usd price
+                  symbolInfo.usdPrice
+                : // alternate currency price
+                  symbolInfo.usdPrice * currencyList[selectedCurrency].rate;
+
+        console.log()
+
         // calculate the usd price
-        const finalPrice = (feeAmount * symbolInfo.usdPrice).toFixed(2);
+        const finalPrice = (feeAmount * price).toFixed(2);
 
         // update the column with the new value
-        $(feeColumn).html(`${$(feeColumn).html()} - $${finalPrice}`);
+        $(feeColumn).html(`${$(feeColumn).html()} - ${finalPrice} ${selectedCurrency}`);
     });
 };
 
@@ -118,19 +165,35 @@ const renderFeeOutput = async (accountInfoListItems, binancePromise) => {
  */
 const start = async () => {
     const binancePromise = getBinanceSymbols();
+    const currencyPromise = getCurrencyRates();
 
     // delay the script to let binance load the fees
     return await new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const accountInfoListItems = $(".accountInfo-lists li");
-
-            if (accountInfoListItems.length > 0) {
-                // render the output for the fee overview list
-                renderFeeOutput(accountInfoListItems, binancePromise)
-                    .then(resolve)
-                    .catch(reject);
+        chrome.storage.local.get(["currency"], result => {
+            // default this setting to USD
+            if (typeof result.currency === "undefined") {
+                chrome.storage.local.set({ currency: "USD" });
+                result.currency = "USD";
             }
-        }, 500);
+            selectedCurrency = result.currency;
+
+            // delay the app so the fee page is loaded
+            setTimeout(() => {
+                const accountInfoListItems = $(".accountInfo-lists li");
+
+                if (accountInfoListItems.length > 0) {
+                    // render the output for the fee overview list
+                    renderFeeOutput(
+                        accountInfoListItems,
+                        selectedCurrency,
+                        binancePromise,
+                        currencyPromise
+                    )
+                        .then(resolve)
+                        .catch(reject);
+                }
+            }, 500);
+        });
     });
 };
 

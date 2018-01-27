@@ -11,23 +11,29 @@
 <body class=" blue lighten-3">
 
 <div class="card grey lighten-4">
-    <label class="card-content white-text center-align">
-        <div class="card-title" style="color: black;">
+    <div class="card-title  center-align">
+        Currency used to display the fees
+    </div>
 
-            <div class="row">
-                <div class="input-field col s12">
-                    <select id="currency_input">
-                        <option value="" disabled selected>Choose your currency</option>
-                        <option value="1">Option 1</option>
-                        <option value="2">Option 2</option>
-                        <option value="3">Option 3</option>
-                    </select>
-                    <label>Currency</label>
-                </div>
+    <div class="card-content white-text center-align">
+        <div class="row">
+            <div class="input-field col s12">
+                <select id="currency_input">
+                    <option value="" disabled selected>Choose your currency</option>
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3">Option 3</option>
+                </select>
+                <label>Currency</label>
             </div>
-
         </div>
-    </label>
+        <div class="row">
+            <div class="input-field col s12">
+                <button class="btn waves-button-input" id="save-btn" href="#">Save</button>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
