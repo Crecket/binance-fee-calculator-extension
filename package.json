@@ -1,7 +1,7 @@
 {
   "name": "binance-fee-calculator-extension",
   "version": "1.0.0",
-  "description": "Automatically calculate the USD transfer fee for withdrawals on Binance",
+  "description": "Automatically calculate the transfer fee for withdrawals on Binance",
   "main": "app.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack --debug --watch --progress --colors",
