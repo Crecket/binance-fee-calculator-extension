@@ -16,7 +16,6 @@ const DEV = process.env.NODE_ENV !== "production";
 let config = {
     entry: {
         popup: `${SRC_DIR}/popup.js`,
-        background: `${SRC_DIR}/background.js`,
         content: `${SRC_DIR}/content.js`
     },
     output: {

@@ -67,7 +67,7 @@ const renderPopupSettings = () => {
 };
 
 // handle form for currency selection
-$(document).ready(function() {
+$(document).ready(() => {
     $("#save-btn").on("click", event => {
         event.preventDefault();
 
@@ -75,10 +75,14 @@ $(document).ready(function() {
             .val()
             .trim();
 
-        console.log(currencyInput);
-
         // store the new list
         chrome.storage.local.set({ currency: currencyInput });
+    });
+
+    $("#fee-btn").on("click", event => {
+        event.preventDefault();
+
+        chrome.tabs.create({ url: "https://www.binance.com/fees.html" });
     });
 });
 
