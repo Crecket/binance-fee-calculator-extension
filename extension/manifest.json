@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Unofficial Binance Fee Calculator - Unofficial",
+  "name": "Binance Fee Calculator - Unofficial",
   "short_name": "Binance Fee Calculator",
   "description": "Automatically calculate the USD transfer fee for withdrawals on Binance",
   "version": "1.0.0",
